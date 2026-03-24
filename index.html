@@ -1,11 +1,10 @@
 from pathlib import Path
-
-html = r"""<!DOCTYPE html>
+html = r'''<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Equation Gallery: Build the City of Patterns</title>
+  <title>Equation Gallery v2 — City of Patterns</title>
   <style>
     :root{
       --bg:#07111f;
@@ -27,21 +26,22 @@ html = r"""<!DOCTYPE html>
       --radius:24px;
       --radius-sm:16px;
     }
-
     *{box-sizing:border-box}
-    html,body{margin:0;height:100%;font-family:Inter,Segoe UI,Arial,sans-serif;background:
-      radial-gradient(circle at top left, #1a2d52 0%, rgba(26,45,82,0) 34%),
-      radial-gradient(circle at top right, #1e3c4b 0%, rgba(30,60,75,0) 28%),
-      linear-gradient(180deg, #07111f 0%, #0d1731 50%, #091325 100%);
-      color:var(--text);}
-
-    button, input, select{font:inherit}
-    .app{min-height:100%; padding:20px;}
-    .shell{
-      max-width:1400px; margin:0 auto; display:grid; gap:18px;
-      grid-template-columns: 320px minmax(0,1fr);
+    html,body{
+      margin:0;height:100%;
+      font-family:Inter,Segoe UI,Arial,sans-serif;
+      background:
+        radial-gradient(circle at top left, #1a2d52 0%, rgba(26,45,82,0) 34%),
+        radial-gradient(circle at top right, #1e3c4b 0%, rgba(30,60,75,0) 28%),
+        linear-gradient(180deg, #07111f 0%, #0d1731 50%, #091325 100%);
+      color:var(--text);
     }
-
+    button,input,select,textarea{font:inherit}
+    .app{min-height:100%;padding:18px}
+    .shell{
+      max-width:1460px;margin:0 auto;display:grid;gap:18px;
+      grid-template-columns:320px minmax(0,1fr)
+    }
     .card{
       background:linear-gradient(180deg, rgba(17,32,59,.96), rgba(11,20,39,.95));
       border:1px solid rgba(159,182,220,.17);
@@ -50,44 +50,38 @@ html = r"""<!DOCTYPE html>
       overflow:hidden;
       backdrop-filter: blur(10px);
     }
-
-    .sidebar{padding:18px; position:sticky; top:20px; height:fit-content}
+    .sidebar{padding:18px;position:sticky;top:18px;height:fit-content}
     .brand{
-      padding:18px; border-radius:20px;
+      padding:18px;border-radius:20px;margin-bottom:14px;
       background:
         radial-gradient(circle at 20% 20%, rgba(255,211,106,.18), transparent 35%),
         radial-gradient(circle at 80% 20%, rgba(85,199,216,.16), transparent 28%),
         linear-gradient(180deg, #13274d, #0e1d3a);
       border:1px solid rgba(255,255,255,.08);
-      margin-bottom:14px;
     }
-    .brand h1{margin:0;font-size:28px;line-height:1.05;letter-spacing:.2px}
+    .brand h1{margin:0;font-size:28px;line-height:1.05}
     .brand p{margin:10px 0 0;color:var(--muted);line-height:1.45}
     .pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
     .pill{
       padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.08);
       color:var(--text);font-size:13px;border:1px solid rgba(255,255,255,.09)
     }
-
     .meter{margin:14px 0 8px}
     .meter-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:14px;color:var(--muted)}
     .bar{height:12px;border-radius:999px;background:#0b1527;border:1px solid rgba(255,255,255,.08);overflow:hidden}
     .bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--mint),var(--teal),var(--gold));transition:width .45s ease}
     .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
-    .stat{
-      padding:12px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07)
-    }
+    .stat{padding:12px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07)}
     .stat .label{font-size:12px;color:var(--soft);text-transform:uppercase;letter-spacing:.08em}
     .stat .value{font-size:22px;font-weight:800;margin-top:6px}
     .mini-title{font-size:13px;color:var(--soft);letter-spacing:.08em;text-transform:uppercase;margin:18px 0 10px}
-
     .district-list{display:grid;gap:10px}
     .district-btn{
-      width:100%; text-align:left; padding:14px 14px 14px 16px; border:none;
-      border-radius:18px; cursor:pointer; color:var(--text);
+      width:100%;text-align:left;padding:14px 14px 14px 16px;border:none;
+      border-radius:18px;cursor:pointer;color:var(--text);
       background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border:1px solid rgba(255,255,255,.07); transition:.22s ease;
-      display:flex; align-items:center; gap:12px;
+      border:1px solid rgba(255,255,255,.07);transition:.22s ease;
+      display:flex;align-items:center;gap:12px;
     }
     .district-btn:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.16)}
     .district-btn.active{background:linear-gradient(180deg, rgba(120,240,196,.17), rgba(85,199,216,.08)); border-color:rgba(120,240,196,.4)}
@@ -97,37 +91,68 @@ html = r"""<!DOCTYPE html>
     }
     .district-text strong{display:block;font-size:15px}
     .district-text span{display:block;margin-top:2px;font-size:12px;color:var(--soft)}
-    .lock{margin-left:auto;color:var(--gold);font-size:14px}
+    .lock{margin-left:auto;color:var(--gold);font-size:15px}
 
     .main{display:grid;gap:18px}
-    .hero{padding:18px 20px; display:flex; justify-content:space-between; gap:20px; align-items:center}
+    .hero{padding:18px 20px;display:grid;gap:16px}
+    .hero-top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}
     .hero h2{margin:0;font-size:32px}
-    .hero p{margin:8px 0 0;color:var(--muted);max-width:900px;line-height:1.55}
+    .hero p{margin:8px 0 0;color:var(--muted);max-width:920px;line-height:1.55}
     .hero-actions{display:flex;gap:10px;flex-wrap:wrap}
     .btn{
-      border:none; cursor:pointer; border-radius:16px; padding:12px 16px; font-weight:700;
-      color:#08111f; background:linear-gradient(180deg, #ffe08b, #ffcd5e); box-shadow:0 8px 25px rgba(255,211,106,.22)
+      border:none;cursor:pointer;border-radius:16px;padding:12px 16px;font-weight:700;
+      color:#08111f;background:linear-gradient(180deg, #ffe08b, #ffcd5e);box-shadow:0 8px 25px rgba(255,211,106,.22)
     }
     .btn.secondary{background:rgba(255,255,255,.08);color:var(--text);box-shadow:none;border:1px solid rgba(255,255,255,.08)}
     .btn.ghost{background:transparent;color:var(--muted);box-shadow:none;border:1px solid rgba(255,255,255,.12)}
     .btn.small{padding:9px 12px;border-radius:12px;font-size:14px}
-
-    .content-grid{display:grid;grid-template-columns: minmax(0,1.2fr) minmax(380px,.9fr);gap:18px}
-    .scene-card{padding:18px}
+    .chipbar{display:flex;gap:10px;flex-wrap:wrap}
+    .chip{
+      padding:9px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.1);
+      background:rgba(255,255,255,.05);cursor:pointer;color:var(--text)
+    }
+    .chip.active{background:rgba(255,211,106,.12);border-color:rgba(255,211,106,.4)}
+    .city-card{padding:16px 18px;border-radius:22px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+    .city-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .city-block{
+      min-height:126px;border-radius:20px;padding:12px;position:relative;overflow:hidden;
+      background:linear-gradient(180deg,#17284c,#0d1a31);
+      border:1px solid rgba(255,255,255,.08);
+      transition:.35s ease; opacity:.55;
+    }
+    .city-block.restored{
+      opacity:1;
+      box-shadow:0 0 0 1px rgba(255,255,255,.08), 0 0 40px rgba(120,240,196,.14) inset;
+    }
+    .city-block.finale{
+      background:
+        radial-gradient(circle at 30% 20%, rgba(255,211,106,.18), transparent 28%),
+        linear-gradient(180deg,#17284c,#0d1a31);
+    }
+    .city-icon{font-size:28px}
+    .city-block h4{margin:8px 0 4px;font-size:15px}
+    .city-block p{margin:0;color:var(--soft);font-size:12px;line-height:1.4}
+    .glow{
+      position:absolute;right:-12px;bottom:-10px;width:90px;height:90px;border-radius:50%;
+      background:radial-gradient(circle, rgba(120,240,196,.32), transparent 68%);
+      opacity:0;transition:.35s ease;
+    }
+    .city-block.restored .glow{opacity:1}
+    .content-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(390px,.95fr);gap:18px}
+    .scene-card,.tool-panel{padding:18px}
     .scene-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:14px}
     .scene-top h3{margin:0;font-size:26px}
     .scene-top p{margin:8px 0 0;color:var(--muted);line-height:1.5}
     .scene-wrap{
-      position:relative; height:470px; overflow:hidden; border-radius:22px;
+      position:relative;height:470px;overflow:hidden;border-radius:22px;
       border:1px solid rgba(255,255,255,.08);
       background:
         radial-gradient(circle at 15% 15%, rgba(255,211,106,.17), transparent 24%),
         radial-gradient(circle at 85% 12%, rgba(177,152,255,.18), transparent 20%),
         linear-gradient(180deg, #1a2240 0%, #17294e 50%, #11223d 100%);
     }
-
-    .sky-stars::before, .sky-stars::after{
-      content:""; position:absolute; inset:0;
+    .sky-stars::before,.sky-stars::after{
+      content:"";position:absolute;inset:0;pointer-events:none;
       background-image:
         radial-gradient(circle, rgba(255,255,255,.8) 1px, transparent 1.5px),
         radial-gradient(circle, rgba(255,255,255,.45) 1px, transparent 1.5px),
@@ -135,90 +160,61 @@ html = r"""<!DOCTYPE html>
       background-size: 140px 140px, 180px 180px, 220px 220px;
       background-position: 10px 20px, 80px 45px, 40px 110px;
       opacity:.4;
-      pointer-events:none;
     }
-
-    .scene{
-      position:relative; width:100%; height:100%;
-    }
+    .scene{position:relative;width:100%;height:100%}
     .ground{
-      position:absolute; left:0; right:0; bottom:0; height:118px;
-      background:linear-gradient(180deg,#16324b,#10233b);
-      border-top:1px solid rgba(255,255,255,.08);
+      position:absolute;left:0;right:0;bottom:0;height:118px;
+      background:linear-gradient(180deg,#16324b,#10233b);border-top:1px solid rgba(255,255,255,.08);
     }
     .lane{
-      position:absolute; left:4%; right:4%; bottom:40px; height:10px; border-radius:999px;
+      position:absolute;left:4%;right:4%;bottom:40px;height:10px;border-radius:999px;
       background:linear-gradient(90deg,rgba(255,255,255,.12),rgba(255,255,255,.03),rgba(255,255,255,.12));
     }
-
-    .object{
-      position:absolute; bottom:118px; transition:all .35s ease;
-      filter: drop-shadow(0 10px 18px rgba(0,0,0,.28));
-    }
-
+    .object{position:absolute;bottom:118px;transition:all .35s ease;filter:drop-shadow(0 10px 18px rgba(0,0,0,.28))}
     .mural-stand{
-      width:88px; height:148px; border-radius:18px; background:linear-gradient(180deg,#243a65,#1b2e52);
-      border:2px solid rgba(255,255,255,.08); display:flex; align-items:flex-start; justify-content:center; padding-top:10px;
+      width:88px;height:148px;border-radius:18px;background:linear-gradient(180deg,#243a65,#1b2e52);
+      border:2px solid rgba(255,255,255,.08);display:flex;align-items:flex-start;justify-content:center;padding-top:10px;
     }
-    .mural-grid{
-      width:68px; display:grid; grid-template-columns:repeat(2,1fr); gap:5px;
-    }
-    .tile{
-      width:100%; aspect-ratio:1; border-radius:10px; background:linear-gradient(180deg,#ffe086,#ffb75f);
-      border:1px solid rgba(255,255,255,.35); box-shadow: inset 0 1px 0 rgba(255,255,255,.35);
-    }
+    .mural-grid{width:68px;display:grid;grid-template-columns:repeat(2,1fr);gap:5px}
+    .tile{width:100%;aspect-ratio:1;border-radius:10px;background:linear-gradient(180deg,#ffe086,#ffb75f);border:1px solid rgba(255,255,255,.35)}
     .tile.alt{background:linear-gradient(180deg,#8ff3df,#4cc4d7)}
     .tile.rose{background:linear-gradient(180deg,#ffb6d2,#ff7ca7)}
     .tile.violet{background:linear-gradient(180deg,#c9b8ff,#9a84ff)}
-
     .lantern-post{
       width:18px;height:158px;background:linear-gradient(180deg,#283f64,#1b2c49);border-radius:12px;
-      border:1px solid rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.08);position:relative;
     }
-    .lantern-wrap{position:absolute; left:50%; transform:translateX(-50%); top:18px; display:grid; gap:10px}
+    .lantern-wrap{position:absolute;left:50%;transform:translateX(-50%);top:18px;display:grid;gap:10px}
     .lantern{
-      width:32px;height:32px;border-radius:50%; background:radial-gradient(circle at 35% 35%, #fff7d6, #ffcb67 48%, #ff8c5d 100%);
-      box-shadow:0 0 20px rgba(255,190,92,.45), inset 0 0 8px rgba(255,255,255,.65);
-      border:1px solid rgba(255,255,255,.35)
+      width:32px;height:32px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #fff7d6, #ffcb67 48%, #ff8c5d 100%);
+      box-shadow:0 0 20px rgba(255,190,92,.45), inset 0 0 8px rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.35)
     }
-
     .market-booth{
-      width:94px;height:112px;border-radius:18px; background:linear-gradient(180deg,#294574,#1d3158);
-      border:2px solid rgba(255,255,255,.08); overflow:hidden; position:relative;
+      width:94px;height:112px;border-radius:18px;background:linear-gradient(180deg,#294574,#1d3158);
+      border:2px solid rgba(255,255,255,.08);overflow:hidden;position:relative;
     }
     .awning{
-      position:absolute; top:0; left:0; right:0; height:30px;
+      position:absolute;top:0;left:0;right:0;height:30px;
       background:repeating-linear-gradient(90deg,#ffd774 0 16px,#ff8ea8 16px 32px,#8fe8e7 32px 48px);
       border-bottom:2px solid rgba(255,255,255,.24)
     }
-    .banner-row{
-      position:absolute; top:38px; left:10px; right:10px; display:grid; grid-template-columns:repeat(3,1fr); gap:6px;
-    }
+    .banner-row{position:absolute;left:10px;right:10px;display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
     .banner{
-      height:28px;border-radius:8px 8px 12px 12px; background:linear-gradient(180deg,#c8b4ff,#917aff);
-      border:1px solid rgba(255,255,255,.25);
+      height:28px;border-radius:8px 8px 12px 12px;background:linear-gradient(180deg,#c8b4ff,#917aff);
+      border:1px solid rgba(255,255,255,.25)
     }
-
-    .tool-panel{padding:18px}
     .task-card{
-      padding:16px; border-radius:20px; background:rgba(255,255,255,.045);
-      border:1px solid rgba(255,255,255,.08); margin-bottom:14px;
+      padding:16px;border-radius:20px;background:rgba(255,255,255,.045);
+      border:1px solid rgba(255,255,255,.08);margin-bottom:14px;
     }
     .task-card h4{margin:0 0 10px;font-size:20px}
     .task-card p{margin:0 0 12px;color:var(--muted);line-height:1.5}
     .task-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-    .tag{
-      font-size:12px;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.07);
-      border:1px solid rgba(255,255,255,.08); color:var(--soft)
-    }
-
+    .tag{font-size:12px;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);color:var(--soft)}
     .controls{display:grid;gap:14px}
-    .control{
-      background:rgba(255,255,255,.04); border-radius:18px; padding:14px; border:1px solid rgba(255,255,255,.07)
-    }
+    .control{background:rgba(255,255,255,.04);border-radius:18px;padding:14px;border:1px solid rgba(255,255,255,.07)}
     .control label{display:flex;justify-content:space-between;gap:12px;margin-bottom:10px;font-weight:700}
     .control small{color:var(--soft);font-weight:500}
-    .range{width:100%}
     input[type=range]{
       appearance:none;width:100%;height:10px;border-radius:999px;background:#0b1527;outline:none;border:1px solid rgba(255,255,255,.08)
     }
@@ -227,82 +223,69 @@ html = r"""<!DOCTYPE html>
       border:2px solid white;cursor:pointer; box-shadow:0 8px 18px rgba(255,211,106,.25)
     }
     .control-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .input, .select{
-      width:100%; background:#0a1325; color:var(--text); border:1px solid rgba(255,255,255,.12);
-      border-radius:14px; padding:12px 12px;
+    .input,.select,.textarea{
+      width:100%;background:#0a1325;color:var(--text);border:1px solid rgba(255,255,255,.12);
+      border-radius:14px;padding:12px 12px;
     }
-    .choices{display:grid;gap:10px}
+    .textarea{min-height:98px;resize:vertical}
+    .choices,.dropzone-grid{display:grid;gap:10px}
     .choice{
-      border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.04);
-      border-radius:16px; padding:12px 14px; cursor:pointer; transition:.18s ease
+      border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);
+      border-radius:16px;padding:12px 14px;cursor:pointer;transition:.18s ease
     }
     .choice:hover{border-color:rgba(255,255,255,.2)}
     .choice.selected{border-color:rgba(255,211,106,.5); background:rgba(255,211,106,.08)}
-    .choice.correct{border-color:rgba(116,227,143,.6); background:rgba(116,227,143,.12)}
-    .choice.incorrect{border-color:rgba(255,102,125,.6); background:rgba(255,102,125,.12)}
-
-    .feedback{
-      margin-top:10px; border-radius:16px; padding:12px 14px; line-height:1.5; display:none
+    .token-row{display:flex;gap:10px;flex-wrap:wrap}
+    .token{
+      padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+      cursor:pointer
     }
+    .slot{
+      padding:12px 14px;border-radius:16px;background:#0a1325;border:1px dashed rgba(255,255,255,.22);
+      min-height:48px;display:flex;align-items:center;color:var(--soft)
+    }
+    .slot.filled{color:var(--text);border-style:solid;background:rgba(255,255,255,.05)}
+    .feedback{margin-top:10px;border-radius:16px;padding:12px 14px;line-height:1.5;display:none}
     .feedback.good{display:block;background:rgba(116,227,143,.11);border:1px solid rgba(116,227,143,.38);color:#dff7e5}
     .feedback.bad{display:block;background:rgba(255,102,125,.12);border:1px solid rgba(255,102,125,.35);color:#ffe5ea}
     .feedback.info{display:block;background:rgba(159,182,220,.12);border:1px solid rgba(159,182,220,.2);color:#e9f1ff}
-
     .representations{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
-    .rep{
-      min-height:220px;padding:14px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07)
-    }
+    .rep{min-height:220px;padding:14px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07)}
     .rep h5{margin:0 0 10px;font-size:16px}
     table{
-      width:100%; border-collapse:collapse; overflow:hidden; border-radius:12px;
-      background:#0a1325
+      width:100%;border-collapse:collapse;overflow:hidden;border-radius:12px;background:#0a1325
     }
-    th,td{border:1px solid rgba(255,255,255,.12); padding:9px 8px; text-align:center}
+    th,td{border:1px solid rgba(255,255,255,.12);padding:9px 8px;text-align:center}
     th{background:#132345;color:#ecf4ff}
     td{color:#dce7ff}
     .eq-card{
-      padding:18px; font-size:28px; font-weight:900; letter-spacing:.02em;
-      border-radius:18px; text-align:center; background:
-      radial-gradient(circle at 20% 20%, rgba(255,211,106,.15), transparent 40%),
-      linear-gradient(180deg,#132345,#0f1c34);
+      padding:18px;font-size:28px;font-weight:900;letter-spacing:.02em;border-radius:18px;text-align:center;
+      background:radial-gradient(circle at 20% 20%, rgba(255,211,106,.15), transparent 40%), linear-gradient(180deg,#132345,#0f1c34);
       border:1px solid rgba(255,255,255,.08)
     }
     .eq-sub{margin-top:10px;text-align:center;color:var(--soft);line-height:1.45}
     .frame-list{display:grid;gap:10px}
-    .frame{
-      padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);color:#edf4ff
-    }
+    .frame{padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);color:#edf4ff}
     .frame strong{color:var(--gold)}
     canvas{width:100%;height:220px;background:#0a1325;border-radius:14px;border:1px solid rgba(255,255,255,.1)}
+    .hidden{display:none !important}
     .toast{
-      position:fixed;right:18px;bottom:18px;z-index:100;
-      background:#10233b;border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:14px 16px;
-      box-shadow:var(--shadow);max-width:420px;display:none
+      position:fixed;right:18px;bottom:18px;z-index:100;background:#10233b;border:1px solid rgba(255,255,255,.12);
+      border-radius:18px;padding:14px 16px;box-shadow:var(--shadow);max-width:420px;display:none
     }
     .toast.show{display:block;animation:rise .35s ease}
     @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-
-    .celebration{
-      pointer-events:none; position:absolute; inset:0; overflow:hidden;
-    }
-    .spark{
-      position:absolute; width:10px;height:10px;border-radius:50%;
-      background:var(--gold); opacity:0; animation: floatUp 1.4s ease forwards;
-    }
-    @keyframes floatUp{
-      0%{transform:translateY(0) scale(.7);opacity:0}
-      10%{opacity:1}
-      100%{transform:translateY(-120px) scale(1.6);opacity:0}
-    }
-
+    .celebration{pointer-events:none;position:absolute;inset:0;overflow:hidden}
+    .spark{position:absolute;width:10px;height:10px;border-radius:50%;background:var(--gold);opacity:0;animation:floatUp 1.4s ease forwards}
+    @keyframes floatUp{0%{transform:translateY(0) scale(.7);opacity:0}10%{opacity:1}100%{transform:translateY(-120px) scale(1.6);opacity:0}}
     .modal-backdrop{
-      position:fixed; inset:0; background:rgba(2,6,13,.72); backdrop-filter:blur(6px);
-      display:none; align-items:center; justify-content:center; z-index:200; padding:20px;
+      position:fixed;inset:0;background:rgba(2,6,13,.72);backdrop-filter:blur(6px);
+      display:none;align-items:center;justify-content:center;z-index:200;padding:20px;
     }
     .modal-backdrop.show{display:flex}
     .modal{
-      max-width:920px; width:100%; background:linear-gradient(180deg,#11203b,#0b1527);
-      border-radius:28px; border:1px solid rgba(255,255,255,.1); box-shadow:var(--shadow); padding:22px;
+      max-width:980px;width:100%;background:linear-gradient(180deg,#11203b,#0b1527);
+      border-radius:28px;border:1px solid rgba(255,255,255,.1);box-shadow:var(--shadow);padding:22px;
     }
     .modal h3{margin:0 0 10px;font-size:30px}
     .modal p{color:var(--muted);line-height:1.6}
@@ -310,60 +293,60 @@ html = r"""<!DOCTYPE html>
     .support-card{padding:16px;border-radius:20px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08)}
     .support-card h4{margin:0 0 8px}
     .footer-note{margin-top:14px;color:var(--soft);font-size:13px}
-
-    @media (max-width: 1180px){
+    .finale-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:12px}
+    .finale-card{padding:14px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}
+    @media (max-width:1180px){
       .shell{grid-template-columns:1fr}
       .sidebar{position:relative;top:auto}
       .content-grid{grid-template-columns:1fr}
     }
-    @media (max-width: 760px){
-      .hero{flex-direction:column;align-items:flex-start}
-      .representations,.support-grid,.control-row{grid-template-columns:1fr}
+    @media (max-width:760px){
+      .hero-top,.representations,.support-grid,.control-row,.city-grid,.finale-grid{grid-template-columns:1fr;display:grid}
       .scene-wrap{height:400px}
     }
   </style>
 </head>
 <body>
-  <div class="app">
-    <div class="shell">
-      <aside class="card sidebar">
-        <div class="brand">
-          <h1>Equation Gallery</h1>
-          <p>Restore the City of Patterns by using tables, graphs, equations, and variable reasoning to bring each art district back to life.</p>
-          <div class="pill-row">
-            <div class="pill">6.EE.C.9</div>
-            <div class="pill">ESOL Support</div>
-            <div class="pill">Interactive Art Math</div>
-          </div>
+<div class="app">
+  <div class="shell">
+    <aside class="card sidebar">
+      <div class="brand">
+        <h1>Equation Gallery</h1>
+        <p>Restore the City of Patterns by using tables, graphs, equations, and variable reasoning to bring each art district back to life.</p>
+        <div class="pill-row">
+          <div class="pill">6.EE.C.9</div>
+          <div class="pill">Interactive Art Math</div>
+          <div class="pill">ESOL-Friendly</div>
         </div>
+      </div>
 
-        <div class="meter">
-          <div class="meter-top">
-            <span>City Restoration</span>
-            <strong id="progressText">0%</strong>
-          </div>
-          <div class="bar"><div class="bar-fill" id="progressFill"></div></div>
+      <div class="meter">
+        <div class="meter-top">
+          <span>City Restoration</span>
+          <strong id="progressText">0%</strong>
         </div>
+        <div class="bar"><div class="bar-fill" id="progressFill"></div></div>
+      </div>
 
-        <div class="stat-grid">
-          <div class="stat"><div class="label">Districts Restored</div><div class="value" id="completedCount">0/3</div></div>
-          <div class="stat"><div class="label">Studio Points</div><div class="value" id="scoreCount">0</div></div>
-        </div>
+      <div class="stat-grid">
+        <div class="stat"><div class="label">Districts Restored</div><div class="value" id="completedCount">0/3</div></div>
+        <div class="stat"><div class="label">Studio Points</div><div class="value" id="scoreCount">0</div></div>
+      </div>
 
-        <div class="mini-title">District Map</div>
-        <div class="district-list" id="districtList"></div>
+      <div class="mini-title">District Map</div>
+      <div class="district-list" id="districtList"></div>
 
-        <div class="mini-title">Language Support</div>
-        <div class="frame-list">
-          <div class="frame"><strong>Independent variable:</strong> the value I choose or control first.</div>
-          <div class="frame"><strong>Dependent variable:</strong> the value that changes because of the input.</div>
-          <div class="frame"><strong>Constant rate:</strong> the same amount added each time the input goes up by 1.</div>
-          <div class="frame"><strong>Rule:</strong> \( y = kx \) means the output is <em>k times</em> the input.</div>
-        </div>
-      </aside>
+      <div class="mini-title">Quick Supports</div>
+      <div class="frame-list">
+        <div class="frame"><strong>Input first:</strong> choose or control one value.</div>
+        <div class="frame"><strong>Output next:</strong> the result changes because of the input.</div>
+        <div class="frame"><strong>Look for the rate:</strong> same number each time.</div>
+      </div>
+    </aside>
 
-      <main class="main">
-        <section class="card hero">
+    <main class="main">
+      <section class="card hero">
+        <div class="hero-top">
           <div>
             <h2 id="heroTitle">Mural District</h2>
             <p id="heroDesc"></p>
@@ -372,745 +355,930 @@ html = r"""<!DOCTYPE html>
             <button class="btn secondary" id="openHelpBtn">Open ESOL Help</button>
             <button class="btn ghost" id="resetBtn">Reset Progress</button>
           </div>
-        </section>
+        </div>
 
-        <section class="content-grid">
-          <div class="card scene-card">
-            <div class="scene-top">
-              <div>
-                <h3 id="sceneTitle"></h3>
-                <p id="sceneBlurb"></p>
-              </div>
-              <button class="btn small secondary" id="animateBtn">Preview Pattern</button>
+        <div class="city-card">
+          <div style="display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:12px">
+            <strong>City Panorama</strong>
+            <span style="color:var(--soft);font-size:14px">Each restored district lights up the city.</span>
+          </div>
+          <div class="city-grid" id="cityGrid"></div>
+        </div>
+
+        <div class="chipbar">
+          <button class="chip" data-toggle="hint">Show Hint</button>
+          <button class="chip" data-toggle="language">Show Language Frame</button>
+          <button class="chip" data-toggle="vocab">Show Vocabulary</button>
+        </div>
+      </section>
+
+      <section class="content-grid">
+        <div class="card scene-card">
+          <div class="scene-top">
+            <div>
+              <h3 id="sceneTitle"></h3>
+              <p id="sceneBlurb"></p>
             </div>
+            <button class="btn small secondary" id="animateBtn">Preview Pattern</button>
+          </div>
 
-            <div class="scene-wrap sky-stars">
-              <div class="scene" id="sceneArea">
-                <div class="celebration" id="celebration"></div>
-                <div class="ground"></div>
-                <div class="lane"></div>
-              </div>
-            </div>
-
-            <div class="representations">
-              <div class="rep">
-                <h5>Table View</h5>
-                <div id="tableWrap"></div>
-              </div>
-              <div class="rep">
-                <h5>Graph View</h5>
-                <canvas id="graphCanvas" width="540" height="250"></canvas>
-              </div>
-              <div class="rep">
-                <h5>Equation View</h5>
-                <div class="eq-card" id="equationText"></div>
-                <div class="eq-sub" id="equationSub"></div>
-              </div>
-              <div class="rep">
-                <h5>Sentence Frames</h5>
-                <div id="framesBox" class="frame-list"></div>
-              </div>
+          <div class="scene-wrap sky-stars">
+            <div class="scene" id="sceneArea">
+              <div class="celebration" id="celebration"></div>
+              <div class="ground"></div>
+              <div class="lane"></div>
             </div>
           </div>
 
-          <div class="card tool-panel">
-            <div class="task-card">
-              <h4 id="taskTitle"></h4>
-              <p id="taskPrompt"></p>
-              <div class="task-meta">
-                <span class="tag" id="taskTag1"></span>
-                <span class="tag" id="taskTag2"></span>
-                <span class="tag" id="taskTag3"></span>
-              </div>
-
-              <div class="controls" id="controlsArea"></div>
-
-              <div class="feedback info" id="hintBox">Change the input and watch the picture, table, graph, and rule update together.</div>
-              <div class="feedback" id="feedbackBox"></div>
-
-              <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
-                <button class="btn" id="checkBtn">Check Work</button>
-                <button class="btn secondary" id="nextBtn">Next District</button>
-              </div>
+          <div class="representations">
+            <div class="rep">
+              <h5>Table View</h5>
+              <div id="tableWrap"></div>
             </div>
-
-            <div class="task-card">
-              <h4>Art Studio Challenge</h4>
-              <p>Create a target design by choosing the correct constant rate. This is a quick “make your own pattern” extension after each district.</p>
-              <div class="control">
-                <label>Choose a design rule <small>Pick the rate that matches the target card</small></label>
-                <div id="studioTarget" class="eq-card" style="font-size:24px;margin-bottom:10px;">Target: y = 4x</div>
-                <select id="studioSelect" class="select">
-                  <option value="">Select a rule</option>
-                  <option value="2">y = 2x</option>
-                  <option value="3">y = 3x</option>
-                  <option value="4">y = 4x</option>
-                  <option value="5">y = 5x</option>
-                  <option value="6">y = 6x</option>
-                </select>
-              </div>
-              <div class="feedback" id="studioFeedback"></div>
-              <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
-                <button class="btn secondary" id="studioBtn">Check Studio Rule</button>
-                <button class="btn ghost" id="newStudioBtn">New Studio Card</button>
+            <div class="rep">
+              <h5>Graph View</h5>
+              <canvas id="graphCanvas" width="540" height="250"></canvas>
+            </div>
+            <div class="rep">
+              <h5>Equation View</h5>
+              <div class="eq-card" id="equationText"></div>
+              <div class="eq-sub" id="equationSub"></div>
+            </div>
+            <div class="rep">
+              <h5>Language Builder</h5>
+              <div id="supportPanels">
+                <div id="hintPanel" class="frame hidden"></div>
+                <div id="languagePanel" class="frame hidden" style="margin-top:10px"></div>
+                <div id="vocabPanel" class="frame hidden" style="margin-top:10px"></div>
+                <div id="defaultSupport" class="frame">Use the chips above to reveal just the support you need.</div>
               </div>
             </div>
           </div>
-        </section>
-      </main>
-    </div>
+        </div>
+
+        <div class="card tool-panel">
+          <div class="task-card">
+            <h4 id="taskTitle"></h4>
+            <p id="taskPrompt"></p>
+            <div class="task-meta">
+              <span class="tag" id="taskTag1"></span>
+              <span class="tag" id="taskTag2"></span>
+              <span class="tag" id="taskTag3"></span>
+            </div>
+
+            <div class="controls" id="controlsArea"></div>
+
+            <div class="feedback" id="feedbackBox"></div>
+
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+              <button class="btn" id="checkBtn">Check Work</button>
+              <button class="btn secondary" id="nextBtn">Next District</button>
+            </div>
+          </div>
+
+          <div class="task-card">
+            <h4>Creative Studio</h4>
+            <p>Design your own installation. Pick a rate, set an input, and explain the relationship in your own words. This is now a build task, not just a quick multiple-choice check.</p>
+            <div class="controls" id="studioArea"></div>
+            <div class="feedback" id="studioFeedback"></div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+              <button class="btn secondary" id="studioBtn">Save Studio Design</button>
+              <button class="btn ghost" id="newStudioBtn">New Studio Prompt</button>
+            </div>
+          </div>
+
+          <div class="task-card hidden" id="finaleCard">
+            <h4>Grand Gallery Reveal</h4>
+            <p>You restored the whole city. Compare the three districts and explain how the same idea can look different in a picture, table, graph, and equation.</p>
+            <div class="finale-grid" id="finaleGrid"></div>
+          </div>
+        </div>
+      </section>
+    </main>
   </div>
+</div>
 
-  <div class="toast" id="toast"></div>
+<div class="toast" id="toast"></div>
 
-  <div class="modal-backdrop" id="helpModal">
-    <div class="modal">
-      <div style="display:flex;justify-content:space-between;gap:16px;align-items:flex-start">
-        <div>
-          <h3>ESOL Math Support</h3>
-          <p>Use these supports while you build the city. The same relationship appears in the picture, the table, the graph, and the equation.</p>
-        </div>
-        <button class="btn small secondary" id="closeHelpBtn">Close</button>
+<div class="modal-backdrop" id="helpModal">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;gap:16px;align-items:flex-start">
+      <div>
+        <h3>ESOL Math Support</h3>
+        <p>Use these supports while you build the city. The same relationship appears in the picture, the table, the graph, and the equation.</p>
       </div>
-      <div class="support-grid">
-        <div class="support-card">
-          <h4>Talk Frames</h4>
-          <p>“The independent variable is <strong>___</strong> because it is what I choose first.”</p>
-          <p>“The dependent variable is <strong>___</strong> because it changes when <strong>___</strong> changes.”</p>
-          <p>“The rule is <strong>y = kx</strong> because the output is always <strong>___ times</strong> the input.”</p>
-        </div>
-        <div class="support-card">
-          <h4>What to Look For</h4>
-          <p><strong>Table:</strong> Does the output grow by the same amount each time?</p>
-          <p><strong>Graph:</strong> Do the points make a straight pattern from the origin?</p>
-          <p><strong>Equation:</strong> Which number tells how many objects are in each group?</p>
-        </div>
-        <div class="support-card">
-          <h4>Vocabulary</h4>
-          <p><strong>Input:</strong> the starting value you choose</p>
-          <p><strong>Output:</strong> the result that depends on the input</p>
-          <p><strong>Constant rate:</strong> same number each time</p>
-          <p><strong>Proportional relationship:</strong> output = rate × input</p>
-        </div>
-        <div class="support-card">
-          <h4>Try This Strategy</h4>
-          <p>1. Look at one group in the picture.</p>
-          <p>2. Count how many objects are in each group.</p>
-          <p>3. Use that number as the rate.</p>
-          <p>4. Check whether the table, graph, and equation all match.</p>
-        </div>
-      </div>
-      <div class="footer-note">Designed for multilingual learners with visual supports, repeated structures, and linked representations.</div>
+      <button class="btn small secondary" id="closeHelpBtn">Close</button>
     </div>
+    <div class="support-grid">
+      <div class="support-card">
+        <h4>Talk Frames</h4>
+        <p>“I control the number of <strong>___</strong>, so that is the independent variable.”</p>
+        <p>“The number of <strong>___</strong> changes because the input changes, so it is dependent.”</p>
+        <p>“I know the rule is <strong>y = kx</strong> because each group has <strong>___</strong> items.”</p>
+      </div>
+      <div class="support-card">
+        <h4>What to Look For</h4>
+        <p><strong>Table:</strong> Does the output grow by the same amount each time?</p>
+        <p><strong>Graph:</strong> Do the points make a straight pattern from the origin?</p>
+        <p><strong>Equation:</strong> Which number tells how many objects are in each group?</p>
+      </div>
+      <div class="support-card">
+        <h4>Vocabulary</h4>
+        <p><strong>Input:</strong> the starting value you choose</p>
+        <p><strong>Output:</strong> the result that depends on the input</p>
+        <p><strong>Constant rate:</strong> same number each time</p>
+        <p><strong>Proportional relationship:</strong> output = rate × input</p>
+      </div>
+      <div class="support-card">
+        <h4>Try This Strategy</h4>
+        <p>1. Look at one group in the picture.</p>
+        <p>2. Count how many objects are in each group.</p>
+        <p>3. Use that number as the rate.</p>
+        <p>4. Check whether the table, graph, and equation all match.</p>
+      </div>
+    </div>
+    <div class="footer-note">Designed for multilingual learners with visual supports, repeated structures, and progressive disclosure.</div>
   </div>
+</div>
 
-  <script>
-    const districts = [
-      {
-        id:"mural",
-        icon:"🎨",
-        name:"Mural District",
-        subtitle:"Tiles grow by a constant pattern",
-        hero:"Restore the mural wall by matching the number of art stands to the number of glowing tiles on the wall.",
-        sceneTitle:"Tile Wall Workshop",
-        sceneBlurb:"Each art stand holds the same number of tiles. Move the slider and watch the mural grow.",
-        prompt:"A street artist builds identical mural stands. Each stand shows 4 glowing tiles. Which equation matches the relationship between stands and tiles?",
-        tags:["Table + Equation","Independent / Dependent","y = kx"],
-        rate:4,
-        inputName:"stands",
-        inputLabel:"Number of stands",
-        outputName:"tiles",
-        outputLabel:"Number of tiles",
-        equationVars:["s","t"],
-        answerChoices:[
-          {label:"t = 4s", value:"correct"},
-          {label:"s = 4t", value:"swap"},
-          {label:"t = s + 4", value:"add"},
-          {label:"t = 3s", value:"wrongrate"}
-        ],
-        answerExplain:"There are 4 tiles on each stand, so the total number of tiles is 4 times the number of stands.",
-        sceneType:"mural"
+<script>
+const TEXT = {
+  hints: {
+    mural: "Count the number of tiles on one stand. That number is the constant rate.",
+    lantern: "Ask: which quantity changes because the number of posts changes?",
+    market: "In a proportional relationship, the graph starts at the origin and the equation is output = rate × input."
+  },
+  language: {
+    mural: "The total number of tiles depends on the number of stands, so the rule is t = 4s.",
+    lantern: "I choose the number of posts first. Then the number of lanterns changes because of that choice.",
+    market: "This relationship is proportional because the output is always 5 times the input."
+  },
+  vocab: {
+    mural: "constant rate = the same number of tiles on every stand",
+    lantern: "dependent variable = the value that changes when another value changes",
+    market: "proportional = a relationship that can be written as y = kx"
+  }
+};
+
+const DISTRICTS = [
+  {
+    id: "mural",
+    icon: "🎨",
+    name: "Mural District",
+    subtitle: "Find the rule",
+    hero: "Restore the mural wall by finding the rule that connects art stands and glowing tiles.",
+    sceneTitle: "Tile Wall Workshop",
+    sceneBlurb: "Each art stand holds the same number of tiles. Test inputs and uncover the equation.",
+    prompt: "A street artist builds identical mural stands. Each stand shows 4 glowing tiles. Which equation matches the relationship between stands and tiles?",
+    tags: ["Find the Rule", "Picture → Equation", "y = kx"],
+    inputName: "stands",
+    outputName: "tiles",
+    vars: ["s", "t"],
+    rate: 4,
+    xMax: 6,
+    yMax: 24,
+    sceneType: "mural",
+    task: {
+      type: "mcq",
+      options: [
+        {value:"correct", label:"t = 4s"},
+        {value:"swap", label:"s = 4t"},
+        {value:"add", label:"t = s + 4"},
+        {value:"wrong", label:"t = 3s"}
+      ],
+      answer: "correct",
+      success: "Correct. There are 4 tiles on each stand, so total tiles = 4 × stands.",
+      retry: "Not yet. Count the tiles on one stand and use that as the multiplier."
+    }
+  },
+  {
+    id: "lantern",
+    icon: "🏮",
+    name: "Lantern Garden",
+    subtitle: "Explain the variables",
+    hero: "Bring light back to the garden by deciding which quantity is independent and which is dependent.",
+    sceneTitle: "Lantern Path",
+    sceneBlurb: "Every lantern post glows with the same number of lanterns. Your job is to explain the variable roles.",
+    prompt: "Complete the language frame to explain the variables in this situation.",
+    tags: ["Variable Reasoning", "Explain Thinking", "Context Language"],
+    inputName: "posts",
+    outputName: "lanterns",
+    vars: ["p", "l"],
+    rate: 3,
+    xMax: 6,
+    yMax: 18,
+    sceneType: "lantern",
+    task: {
+      type: "slotFill",
+      slots: [
+        {key:"independent", label:"Independent variable"},
+        {key:"dependent", label:"Dependent variable"}
+      ],
+      tokens: ["number of posts", "number of lanterns"],
+      answers: {
+        independent: "number of posts",
+        dependent: "number of lanterns"
       },
-      {
-        id:"lantern",
-        icon:"🏮",
-        name:"Lantern Garden",
-        subtitle:"Posts light the sky in equal groups",
-        hero:"Bring light back to the evening garden by connecting posts, lanterns, points, and equations.",
-        sceneTitle:"Lantern Path",
-        sceneBlurb:"Every lantern post glows with the same number of lanterns. Compare the picture, graph, table, and rule.",
-        prompt:"A designer hangs 3 lanterns on each post. Which variable is dependent?",
-        tags:["Variables","Graph + Context","ESOL Reasoning"],
-        rate:3,
-        inputName:"posts",
-        inputLabel:"Number of posts",
-        outputName:"lanterns",
-        outputLabel:"Number of lanterns",
-        equationVars:["p","l"],
-        variableAnswer:"lanterns",
-        sceneType:"lantern"
-      },
-      {
-        id:"market",
-        icon:"🏪",
-        name:"Market Banner Studio",
-        subtitle:"Booths display matching banner sets",
-        hero:"Restore the market by matching booths, banners, the table, and the graph, then predict a missing value.",
-        sceneTitle:"Festival Market",
-        sceneBlurb:"Every booth displays the same number of banners. Use the relationship to complete the table and graph.",
-        prompt:"Each market booth has 5 banners. If there are 6 booths, how many banners are there?",
-        tags:["Table Completion","Graphing Pattern","Missing Value"],
-        rate:5,
-        inputName:"booths",
-        inputLabel:"Number of booths",
-        outputName:"banners",
-        outputLabel:"Number of banners",
-        equationVars:["b","n"],
-        numericAnswer:30,
-        sceneType:"market"
-      }
-    ];
-
-    const state = {
-      districtIndex: 0,
-      sceneInput: 3,
-      score: 0,
-      completed: {},
-      studioTarget: 4
-    };
-
-    const el = {
-      districtList: document.getElementById('districtList'),
-      heroTitle: document.getElementById('heroTitle'),
-      heroDesc: document.getElementById('heroDesc'),
-      sceneTitle: document.getElementById('sceneTitle'),
-      sceneBlurb: document.getElementById('sceneBlurb'),
-      taskTitle: document.getElementById('taskTitle'),
-      taskPrompt: document.getElementById('taskPrompt'),
-      taskTag1: document.getElementById('taskTag1'),
-      taskTag2: document.getElementById('taskTag2'),
-      taskTag3: document.getElementById('taskTag3'),
-      controlsArea: document.getElementById('controlsArea'),
-      feedbackBox: document.getElementById('feedbackBox'),
-      hintBox: document.getElementById('hintBox'),
-      sceneArea: document.getElementById('sceneArea'),
-      tableWrap: document.getElementById('tableWrap'),
-      equationText: document.getElementById('equationText'),
-      equationSub: document.getElementById('equationSub'),
-      framesBox: document.getElementById('framesBox'),
-      graphCanvas: document.getElementById('graphCanvas'),
-      progressText: document.getElementById('progressText'),
-      progressFill: document.getElementById('progressFill'),
-      completedCount: document.getElementById('completedCount'),
-      scoreCount: document.getElementById('scoreCount'),
-      checkBtn: document.getElementById('checkBtn'),
-      nextBtn: document.getElementById('nextBtn'),
-      animateBtn: document.getElementById('animateBtn'),
-      resetBtn: document.getElementById('resetBtn'),
-      toast: document.getElementById('toast'),
-      helpModal: document.getElementById('helpModal'),
-      openHelpBtn: document.getElementById('openHelpBtn'),
-      closeHelpBtn: document.getElementById('closeHelpBtn'),
-      celebration: document.getElementById('celebration'),
-      studioSelect: document.getElementById('studioSelect'),
-      studioTarget: document.getElementById('studioTarget'),
-      studioBtn: document.getElementById('studioBtn'),
-      studioFeedback: document.getElementById('studioFeedback'),
-      newStudioBtn: document.getElementById('newStudioBtn')
-    };
-
-    let currentChoice = null;
-
-    function saveState(){
-      localStorage.setItem('equationGalleryState', JSON.stringify(state));
+      success: "Yes. You choose the number of posts first, and then the number of lanterns changes because of that.",
+      retry: "Try again. Which quantity can you choose first? Which quantity changes as a result?"
     }
-
-    function loadState(){
-      try{
-        const raw = localStorage.getItem('equationGalleryState');
-        if(!raw) return;
-        const saved = JSON.parse(raw);
-        Object.assign(state, saved);
-      }catch(e){}
+  },
+  {
+    id: "market",
+    icon: "🏪",
+    name: "Market Banner Studio",
+    subtitle: "Check if it is proportional",
+    hero: "Restore the market by checking whether the relationship is proportional across the picture, table, graph, and equation.",
+    sceneTitle: "Festival Market",
+    sceneBlurb: "Every booth displays the same number of banners. Decide whether all the representations show a proportional relationship.",
+    prompt: "Each booth has 5 banners. Is this relationship proportional? Choose yes or no and explain with one reason.",
+    tags: ["Proportional?", "Multi-Representation", "Reasoning"],
+    inputName: "booths",
+    outputName: "banners",
+    vars: ["b", "n"],
+    rate: 5,
+    xMax: 6,
+    yMax: 30,
+    sceneType: "market",
+    task: {
+      type: "yesNoExplain",
+      answer: "yes",
+      success: "Correct. The relationship is proportional because the output is always 5 times the input.",
+      retry: "Try again. A proportional relationship can be written as y = kx and has a constant rate."
     }
+  }
+];
 
-    function showToast(msg){
-      el.toast.textContent = msg;
-      el.toast.classList.add('show');
-      clearTimeout(showToast.t);
-      showToast.t = setTimeout(()=> el.toast.classList.remove('show'), 2600);
+const ENGINE = {
+  getPoints(d){
+    const pts = [];
+    for(let x=0;x<=d.xMax;x++){
+      pts.push({x, y: x * d.rate});
     }
-
-    function district(){
-      return districts[state.districtIndex];
+    return pts;
+  },
+  getTableRows(d, count=4){
+    const rows = [];
+    for(let x=1;x<=count;x++){
+      rows.push({x, y:x*d.rate});
     }
+    return rows;
+  },
+  equation(d){
+    return `${d.vars[1]} = ${d.rate}${d.vars[0]}`;
+  }
+};
 
-    function renderDistrictList(){
-      el.districtList.innerHTML = '';
-      districts.forEach((d, i) => {
-        const btn = document.createElement('button');
-        btn.className = 'district-btn' + (i === state.districtIndex ? ' active' : '');
-        btn.innerHTML = `
-          <div class="district-badge">${d.icon}</div>
-          <div class="district-text">
-            <strong>${d.name}</strong>
-            <span>${d.subtitle}</span>
+const Storage = {
+  key: "equationGalleryV2",
+  load(){
+    try{
+      return JSON.parse(localStorage.getItem(this.key) || "{}");
+    }catch(e){ return {}; }
+  },
+  save(state){
+    localStorage.setItem(this.key, JSON.stringify(state));
+  },
+  clear(){
+    localStorage.removeItem(this.key);
+  }
+};
+
+const state = {
+  districtIndex: 0,
+  sceneInput: 3,
+  score: 0,
+  completed: {},
+  answers: {},
+  supportOpen: {hint:false, language:false, vocab:false},
+  studio: {rate:4, input:3, sentence:""}
+};
+
+Object.assign(state, Storage.load());
+
+const el = {
+  districtList: document.getElementById("districtList"),
+  cityGrid: document.getElementById("cityGrid"),
+  heroTitle: document.getElementById("heroTitle"),
+  heroDesc: document.getElementById("heroDesc"),
+  sceneTitle: document.getElementById("sceneTitle"),
+  sceneBlurb: document.getElementById("sceneBlurb"),
+  taskTitle: document.getElementById("taskTitle"),
+  taskPrompt: document.getElementById("taskPrompt"),
+  taskTag1: document.getElementById("taskTag1"),
+  taskTag2: document.getElementById("taskTag2"),
+  taskTag3: document.getElementById("taskTag3"),
+  controlsArea: document.getElementById("controlsArea"),
+  feedbackBox: document.getElementById("feedbackBox"),
+  sceneArea: document.getElementById("sceneArea"),
+  tableWrap: document.getElementById("tableWrap"),
+  equationText: document.getElementById("equationText"),
+  equationSub: document.getElementById("equationSub"),
+  graphCanvas: document.getElementById("graphCanvas"),
+  progressText: document.getElementById("progressText"),
+  progressFill: document.getElementById("progressFill"),
+  completedCount: document.getElementById("completedCount"),
+  scoreCount: document.getElementById("scoreCount"),
+  checkBtn: document.getElementById("checkBtn"),
+  nextBtn: document.getElementById("nextBtn"),
+  animateBtn: document.getElementById("animateBtn"),
+  resetBtn: document.getElementById("resetBtn"),
+  toast: document.getElementById("toast"),
+  helpModal: document.getElementById("helpModal"),
+  openHelpBtn: document.getElementById("openHelpBtn"),
+  closeHelpBtn: document.getElementById("closeHelpBtn"),
+  celebration: document.getElementById("celebration"),
+  hintPanel: document.getElementById("hintPanel"),
+  languagePanel: document.getElementById("languagePanel"),
+  vocabPanel: document.getElementById("vocabPanel"),
+  defaultSupport: document.getElementById("defaultSupport"),
+  studioArea: document.getElementById("studioArea"),
+  studioFeedback: document.getElementById("studioFeedback"),
+  studioBtn: document.getElementById("studioBtn"),
+  newStudioBtn: document.getElementById("newStudioBtn"),
+  finaleCard: document.getElementById("finaleCard"),
+  finaleGrid: document.getElementById("finaleGrid")
+};
+
+function currentDistrict(){ return DISTRICTS[state.districtIndex]; }
+function capitalize(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+
+const SceneRenderers = {
+  mural(d){
+    const n = state.sceneInput;
+    const spacing = 112, left = 34;
+    for(let i=0;i<n;i++){
+      const wrap = create("div","object");
+      wrap.style.left = (left + i*spacing) + "px";
+      wrap.innerHTML = `
+        <div class="mural-stand">
+          <div class="mural-grid">
+            <div class="tile"></div>
+            <div class="tile alt"></div>
+            <div class="tile rose"></div>
+            <div class="tile violet"></div>
           </div>
-          ${state.completed[d.id] ? '<div class="lock">✓</div>' : ''}
-        `;
-        btn.addEventListener('click', () => {
-          state.districtIndex = i;
-          state.sceneInput = 3;
-          currentChoice = null;
-          render();
-        });
-        el.districtList.appendChild(btn);
+        </div>`;
+      el.sceneArea.appendChild(wrap);
+    }
+  },
+  lantern(d){
+    const n = state.sceneInput;
+    const spacing = 112, left = 34;
+    for(let i=0;i<n;i++){
+      const wrap = create("div","object");
+      wrap.style.left = (left + i*spacing) + "px";
+      const post = create("div","lantern-post");
+      const holder = create("div","lantern-wrap");
+      for(let j=0;j<3;j++){
+        holder.appendChild(create("div","lantern"));
+      }
+      post.appendChild(holder);
+      wrap.appendChild(post);
+      el.sceneArea.appendChild(wrap);
+    }
+  },
+  market(d){
+    const n = state.sceneInput;
+    const spacing = 112, left = 34;
+    for(let i=0;i<n;i++){
+      const wrap = create("div","object");
+      wrap.style.left = (left + i*spacing) + "px";
+      const booth = create("div","market-booth");
+      booth.innerHTML = `<div class="awning"></div>`;
+      const row1 = create("div","banner-row"); row1.style.top = "38px";
+      const row2 = create("div","banner-row"); row2.style.top = "72px";
+      for(let j=0;j<3;j++){ row1.appendChild(create("div","banner")); row2.appendChild(create("div","banner")); }
+      booth.appendChild(row1); booth.appendChild(row2);
+      wrap.appendChild(booth);
+      el.sceneArea.appendChild(wrap);
+    }
+  }
+};
+
+const TaskRenderers = {
+  mcq(d, answerState){
+    const wrap = create("div","controls");
+    wrap.appendChild(sliderBlock(d));
+    const block = create("div","control");
+    block.innerHTML = `<label>Choose the equation <small>Which rule matches the picture?</small></label>`;
+    const choices = create("div","choices");
+    d.task.options.forEach(opt => {
+      const c = create("div","choice" + (answerState.choice===opt.value ? " selected" : ""));
+      c.textContent = opt.label;
+      c.addEventListener("click", ()=> {
+        updateAnswer(d.id, {choice: opt.value});
+        renderTaskOnly();
       });
-    }
+      choices.appendChild(c);
+    });
+    block.appendChild(choices);
+    wrap.appendChild(block);
+    return wrap;
+  },
+  slotFill(d, answerState){
+    const wrap = create("div","controls");
+    wrap.appendChild(sliderBlock(d));
 
-    function renderControls(){
-      const d = district();
-      const controls = document.createElement('div');
-
-      const sliderBlock = document.createElement('div');
-      sliderBlock.className = 'control';
-      sliderBlock.innerHTML = `
-        <label>${d.inputLabel}<small>Move the slider to test the pattern</small></label>
-        <input class="range" id="sceneRange" type="range" min="1" max="6" value="${state.sceneInput}" />
-        <div style="display:flex;justify-content:space-between;margin-top:8px;color:var(--soft)">
-          <span>1</span><strong id="rangeValue">${state.sceneInput}</strong><span>6</span>
-        </div>
-      `;
-      controls.appendChild(sliderBlock);
-
-      if(d.id === 'mural'){
-        const choiceBlock = document.createElement('div');
-        choiceBlock.className = 'control';
-        choiceBlock.innerHTML = `<label>Choose the equation<small>Which rule matches the picture?</small></label>`;
-        const choices = document.createElement('div');
-        choices.className = 'choices';
-        d.answerChoices.forEach(choice => {
-          const c = document.createElement('div');
-          c.className = 'choice' + (currentChoice === choice.value ? ' selected' : '');
-          c.textContent = choice.label;
-          c.addEventListener('click', () => {
-            currentChoice = choice.value;
-            renderControls();
-          });
-          choices.appendChild(c);
-        });
-        choiceBlock.appendChild(choices);
-        controls.appendChild(choiceBlock);
-      }
-
-      if(d.id === 'lantern'){
-        const variableBlock = document.createElement('div');
-        variableBlock.className = 'control';
-        variableBlock.innerHTML = `
-          <label>Choose the dependent variable<small>Which value changes because of the input?</small></label>
-          <div class="choices">
-            <div class="choice ${currentChoice === 'posts' ? 'selected' : ''}" data-choice="posts">number of posts</div>
-            <div class="choice ${currentChoice === 'lanterns' ? 'selected' : ''}" data-choice="lanterns">number of lanterns</div>
-          </div>
-        `;
-        controls.appendChild(variableBlock);
-      }
-
-      if(d.id === 'market'){
-        const numericBlock = document.createElement('div');
-        numericBlock.className = 'control';
-        numericBlock.innerHTML = `
-          <label>Missing value<small>Use the rule for 6 booths</small></label>
-          <div class="control-row">
-            <input id="numericInput" class="input" type="number" placeholder="Enter number of banners" value="${currentChoice ?? ''}" />
-            <div class="eq-card" style="font-size:22px;padding:14px">6 booths → ? banners</div>
-          </div>
-        `;
-        controls.appendChild(numericBlock);
-      }
-
-      el.controlsArea.innerHTML = '';
-      el.controlsArea.appendChild(controls);
-
-      document.getElementById('sceneRange').addEventListener('input', (e) => {
-        state.sceneInput = Number(e.target.value);
-        document.getElementById('rangeValue').textContent = state.sceneInput;
-        updateRepresentations();
-        renderScene();
-        saveState();
+    const block = create("div","control");
+    block.innerHTML = `<label>Build the explanation <small>Place each phrase in the correct slot</small></label>`;
+    const tokenRow = create("div","token-row");
+    d.task.tokens.forEach(tok => {
+      const t = create("button","token");
+      t.textContent = tok;
+      t.type = "button";
+      t.addEventListener("click", ()=> {
+        const current = answerState.independent ? "dependent" : "independent";
+        updateAnswer(d.id, {[current]: tok});
+        renderTaskOnly();
       });
-
-      if(d.id === 'lantern'){
-        [...el.controlsArea.querySelectorAll('[data-choice]')].forEach(node => {
-          node.addEventListener('click', () => {
-            currentChoice = node.dataset.choice;
-            renderControls();
-          });
-        });
-      }
-
-      if(d.id === 'market'){
-        const input = document.getElementById('numericInput');
-        input.addEventListener('input', () => currentChoice = input.value);
-      }
-    }
-
-    function renderScene(){
-      const d = district();
-      el.sceneArea.querySelectorAll('.object').forEach(n => n.remove());
-      const n = state.sceneInput;
-      const spacing = 112;
-      const left = 34;
-
-      for(let i=0;i<n;i++){
-        const wrap = document.createElement('div');
-        wrap.className = 'object';
-        wrap.style.left = (left + i * spacing) + 'px';
-
-        if(d.sceneType === 'mural'){
-          const stand = document.createElement('div');
-          stand.className = 'mural-stand';
-          const grid = document.createElement('div');
-          grid.className = 'mural-grid';
-          ['','alt','rose','violet'].forEach(cls => {
-            const tile = document.createElement('div');
-            tile.className = 'tile ' + cls;
-            grid.appendChild(tile);
-          });
-          stand.appendChild(grid);
-          wrap.appendChild(stand);
-        }
-
-        if(d.sceneType === 'lantern'){
-          const post = document.createElement('div');
-          post.className = 'lantern-post';
-          const holder = document.createElement('div');
-          holder.className = 'lantern-wrap';
-          for(let j=0;j<3;j++){
-            const lan = document.createElement('div');
-            lan.className = 'lantern';
-            holder.appendChild(lan);
-          }
-          post.appendChild(holder);
-          wrap.appendChild(post);
-        }
-
-        if(d.sceneType === 'market'){
-          const booth = document.createElement('div');
-          booth.className = 'market-booth';
-          const awn = document.createElement('div');
-          awn.className = 'awning';
-          const row = document.createElement('div');
-          row.className = 'banner-row';
-          for(let j=0;j<3;j++){
-            const b1 = document.createElement('div');
-            b1.className = 'banner';
-            row.appendChild(b1);
-          }
-          const row2 = row.cloneNode(true);
-          row2.style.top = '72px';
-          booth.appendChild(awn);
-          booth.appendChild(row);
-          booth.appendChild(row2);
-          wrap.appendChild(booth);
-        }
-        el.sceneArea.appendChild(wrap);
-      }
-    }
-
-    function buildTable(){
-      const d = district();
-      const rows = [];
-      for(let x=1;x<=4;x++){
-        rows.push(`<tr><td>${x}</td><td>${x*d.rate}</td></tr>`);
-      }
-      el.tableWrap.innerHTML = `
-        <table>
-          <thead><tr><th>${capitalize(d.inputName)}</th><th>${capitalize(d.outputName)}</th></tr></thead>
-          <tbody>${rows.join('')}</tbody>
-        </table>
-      `;
-    }
-
-    function updateRepresentations(){
-      const d = district();
-      buildTable();
-      const [xv,yv] = d.equationVars;
-      el.equationText.textContent = `${yv} = ${d.rate}${xv}`;
-      el.equationSub.innerHTML = `${capitalize(d.outputName)} = ${d.rate} × ${d.inputName}`;
-      el.framesBox.innerHTML = `
-        <div class="frame">The independent variable is <strong>${d.inputName}</strong> because it is what I choose first.</div>
-        <div class="frame">The dependent variable is <strong>${d.outputName}</strong> because it changes when the number of ${d.inputName} changes.</div>
-        <div class="frame">The constant rate is <strong>${d.rate}</strong> because each ${singular(d.inputName)} adds ${d.rate} ${d.outputName}.</div>
-        <div class="frame">When ${d.equationVars[0]} = ${state.sceneInput}, then ${d.equationVars[1]} = ${state.sceneInput * d.rate}.</div>
-      `;
-      drawGraph(d.rate);
-    }
-
-    function drawGraph(rate){
-      const canvas = el.graphCanvas;
-      const ctx = canvas.getContext('2d');
-      const w = canvas.width;
-      const h = canvas.height;
-      ctx.clearRect(0,0,w,h);
-
-      ctx.fillStyle = '#0a1325';
-      ctx.fillRect(0,0,w,h);
-
-      const margin = 38;
-      const maxX = 6;
-      const maxY = rate * 6;
-
-      ctx.strokeStyle = 'rgba(255,255,255,.08)';
-      ctx.lineWidth = 1;
-
-      for(let i=0;i<=6;i++){
-        const x = margin + (w - margin*2) * i/6;
-        ctx.beginPath(); ctx.moveTo(x, margin); ctx.lineTo(x, h-margin); ctx.stroke();
-      }
-      for(let i=0;i<=6;i++){
-        const y = h - margin - (h - margin*2) * i/6;
-        ctx.beginPath(); ctx.moveTo(margin, y); ctx.lineTo(w-margin, y); ctx.stroke();
-      }
-
-      ctx.strokeStyle = '#9ddfff';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(margin, h-margin);
-      ctx.lineTo(margin, margin);
-      ctx.lineTo(margin-5, margin+10);
-      ctx.moveTo(margin, margin);
-      ctx.lineTo(margin+5, margin+10);
-
-      ctx.moveTo(margin, h-margin);
-      ctx.lineTo(w-margin, h-margin);
-      ctx.lineTo(w-margin-10, h-margin-5);
-      ctx.moveTo(w-margin, h-margin);
-      ctx.lineTo(w-margin-10, h-margin+5);
-      ctx.stroke();
-
-      ctx.fillStyle = '#dbe9ff';
-      ctx.font = '13px Inter, Arial';
-      for(let i=0;i<=6;i++){
-        const x = margin + (w - margin*2) * i/6;
-        ctx.fillText(i, x-4, h-margin+20);
-      }
-      for(let i=0;i<=6;i++){
-        const value = Math.round(maxY * i/6);
-        const y = h - margin - (h - margin*2) * i/6;
-        ctx.fillText(value, 8, y+4);
-      }
-
-      ctx.fillStyle = '#cfe4ff';
-      ctx.fillText(capitalize(district().inputName), w/2-20, h-8);
-      ctx.save();
-      ctx.translate(14, h/2+12);
-      ctx.rotate(-Math.PI/2);
-      ctx.fillText(capitalize(district().outputName), 0, 0);
-      ctx.restore();
-
-      ctx.strokeStyle = '#77f0c8';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      for(let x=0;x<=6;x++){
-        const y = rate*x;
-        const px = margin + (w - margin*2) * x/maxX;
-        const py = h - margin - (h - margin*2) * y/maxY;
-        if(x===0) ctx.moveTo(px, py);
-        else ctx.lineTo(px, py);
-      }
-      ctx.stroke();
-
-      for(let x=1;x<=6;x++){
-        const y = rate*x;
-        const px = margin + (w - margin*2) * x/maxX;
-        const py = h - margin - (h - margin*2) * y/maxY;
-        const isCurrent = x === state.sceneInput;
-        ctx.beginPath();
-        ctx.fillStyle = isCurrent ? '#ffd36a' : '#7de4f2';
-        ctx.arc(px, py, isCurrent ? 7 : 5, 0, Math.PI*2);
-        ctx.fill();
-        if(isCurrent){
-          ctx.fillStyle = '#fff5d8';
-          ctx.font = 'bold 14px Inter, Arial';
-          ctx.fillText(`(${x}, ${y})`, px+10, py-10);
-        }
-      }
-    }
-
-    function evaluate(){
-      const d = district();
-      let correct = false;
-      let message = "";
-
-      if(d.id === 'mural'){
-        correct = currentChoice === 'correct';
-        message = correct
-          ? `Yes. ${d.answerExplain}`
-          : `Not yet. Count how many tiles are on each stand. The total number of tiles is the number of stands multiplied by that amount.`;
-      }
-      if(d.id === 'lantern'){
-        correct = currentChoice === d.variableAnswer;
-        message = correct
-          ? `Correct. The number of lanterns depends on how many posts there are.`
-          : `Try again. Ask: which value changes because the number of posts changes?`;
-      }
-      if(d.id === 'market'){
-        correct = Number(currentChoice) === d.numericAnswer;
-        message = correct
-          ? `Correct. There are 5 banners on each booth, so 6 booths have 30 banners.`
-          : `Not yet. Each booth has 5 banners, so multiply the number of booths by 5.`;
-      }
-
-      el.feedbackBox.className = 'feedback ' + (correct ? 'good' : 'bad');
-      el.feedbackBox.textContent = message;
-
-      if(correct && !state.completed[d.id]){
-        state.completed[d.id] = true;
-        state.score += 10;
-        celebrate();
-        showToast(`${d.name} restored!`);
-      } else if(correct){
-        showToast(`Nice work. ${d.name} is already restored.`);
-      }
-
-      updateProgress();
-      renderDistrictList();
-      saveState();
-    }
-
-    function celebrate(){
-      for(let i=0;i<18;i++){
-        const s = document.createElement('div');
-        s.className = 'spark';
-        s.style.left = (15 + Math.random()*70) + '%';
-        s.style.bottom = (20 + Math.random()*20) + '%';
-        s.style.background = ['#ffd36a','#78f0c4','#ff8fb1','#b198ff'][Math.floor(Math.random()*4)];
-        s.style.animationDelay = (Math.random()*0.25)+'s';
-        el.celebration.appendChild(s);
-        setTimeout(()=>s.remove(), 1600);
-      }
-    }
-
-    function updateProgress(){
-      const total = districts.length;
-      const done = districts.filter(d => state.completed[d.id]).length;
-      const percent = Math.round(done / total * 100);
-      el.progressText.textContent = `${percent}%`;
-      el.progressFill.style.width = `${percent}%`;
-      el.completedCount.textContent = `${done}/${total}`;
-      el.scoreCount.textContent = state.score;
-    }
-
-    function nextDistrict(){
-      state.districtIndex = (state.districtIndex + 1) % districts.length;
-      state.sceneInput = 3;
-      currentChoice = null;
-      render();
-    }
-
-    function previewPattern(){
-      let current = 1;
-      state.sceneInput = current;
-      renderScene();
-      updateRepresentations();
-
-      clearInterval(previewPattern.timer);
-      previewPattern.timer = setInterval(() => {
-        current++;
-        if(current > 6){
-          clearInterval(previewPattern.timer);
-          return;
-        }
-        state.sceneInput = current;
-        const range = document.getElementById('sceneRange');
-        if(range){
-          range.value = current;
-          const rv = document.getElementById('rangeValue');
-          if(rv) rv.textContent = current;
-        }
-        renderScene();
-        updateRepresentations();
-      }, 420);
-    }
-
-    function capitalize(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
-    function singular(s){ return s.endsWith('s') ? s.slice(0, -1) : s; }
-
-    function renderStudioCard(){
-      const options = [3,4,5,6];
-      state.studioTarget = options[Math.floor(Math.random()*options.length)];
-      el.studioTarget.textContent = `Target: y = ${state.studioTarget}x`;
-      el.studioSelect.value = '';
-      el.studioFeedback.className = 'feedback';
-      el.studioFeedback.textContent = '';
-    }
-
-    function checkStudio(){
-      const val = Number(el.studioSelect.value);
-      const ok = val === state.studioTarget;
-      el.studioFeedback.className = 'feedback ' + (ok ? 'good' : 'bad');
-      el.studioFeedback.textContent = ok
-        ? `Correct. This design grows by ${state.studioTarget} each time the input increases by 1.`
-        : `Try again. The rule should multiply the input by ${state.studioTarget}.`;
-      if(ok){
-        state.score += 4;
-        updateProgress();
-        saveState();
-      }
-    }
-
-    function render(){
-      const d = district();
-      el.heroTitle.textContent = d.name;
-      el.heroDesc.textContent = d.hero;
-      el.sceneTitle.textContent = d.sceneTitle;
-      el.sceneBlurb.textContent = d.sceneBlurb;
-      el.taskTitle.textContent = `District Task`;
-      el.taskPrompt.textContent = d.prompt;
-      el.taskTag1.textContent = d.tags[0];
-      el.taskTag2.textContent = d.tags[1];
-      el.taskTag3.textContent = d.tags[2];
-      el.feedbackBox.className = 'feedback';
-      el.feedbackBox.textContent = '';
-      renderDistrictList();
-      renderControls();
-      renderScene();
-      updateRepresentations();
-      updateProgress();
-      saveState();
-    }
-
-    el.checkBtn.addEventListener('click', evaluate);
-    el.nextBtn.addEventListener('click', nextDistrict);
-    el.animateBtn.addEventListener('click', previewPattern);
-    el.resetBtn.addEventListener('click', () => {
-      localStorage.removeItem('equationGalleryState');
-      state.districtIndex = 0;
-      state.sceneInput = 3;
-      state.score = 0;
-      state.completed = {};
-      currentChoice = null;
-      renderStudioCard();
-      render();
-      showToast('Progress reset.');
+      tokenRow.appendChild(t);
     });
-    el.openHelpBtn.addEventListener('click', () => el.helpModal.classList.add('show'));
-    el.closeHelpBtn.addEventListener('click', () => el.helpModal.classList.remove('show'));
-    el.helpModal.addEventListener('click', (e) => {
-      if(e.target === el.helpModal) el.helpModal.classList.remove('show');
-    });
-    el.studioBtn.addEventListener('click', checkStudio);
-    el.newStudioBtn.addEventListener('click', renderStudioCard);
 
-    loadState();
-    renderStudioCard();
-    render();
-  </script>
+    const grid = create("div","dropzone-grid");
+    d.task.slots.forEach(slot => {
+      const card = create("div","control");
+      const assigned = answerState[slot.key] || "";
+      card.innerHTML = `<label>${slot.label}<small>Tap a phrase to place it here</small></label>`;
+      const s = create("div","slot" + (assigned ? " filled" : ""));
+      s.textContent = assigned || "Tap a phrase above to add it here";
+      s.addEventListener("click", ()=>{
+        updateAnswer(d.id, {[slot.key]:""});
+        renderTaskOnly();
+      });
+      card.appendChild(s);
+      grid.appendChild(card);
+    });
+
+    block.appendChild(tokenRow);
+    block.appendChild(grid);
+    wrap.appendChild(block);
+    return wrap;
+  },
+  yesNoExplain(d, answerState){
+    const wrap = create("div","controls");
+    wrap.appendChild(sliderBlock(d));
+
+    const block = create("div","control");
+    block.innerHTML = `<label>Is it proportional? <small>Choose and explain</small></label>`;
+    const choices = create("div","choices");
+    ["yes","no"].forEach(opt => {
+      const c = create("div","choice" + (answerState.choice===opt ? " selected" : ""));
+      c.textContent = opt.toUpperCase();
+      c.addEventListener("click", ()=> {
+        updateAnswer(d.id, {choice: opt});
+        renderTaskOnly();
+      });
+      choices.appendChild(c);
+    });
+    block.appendChild(choices);
+    wrap.appendChild(block);
+
+    const explain = create("div","control");
+    explain.innerHTML = `<label>Reason <small>Use one sentence or phrase</small></label>`;
+    const ta = create("textarea","textarea");
+    ta.placeholder = "Example: The output is always 5 times the input.";
+    ta.value = answerState.reason || "";
+    ta.addEventListener("input", ()=> updateAnswer(d.id, {reason: ta.value}));
+    explain.appendChild(ta);
+    wrap.appendChild(explain);
+    return wrap;
+  }
+};
+
+const Evaluators = {
+  mcq(d, a){
+    const ok = a.choice === d.task.answer;
+    return {ok, msg: ok ? d.task.success : d.task.retry};
+  },
+  slotFill(d, a){
+    const ok = a.independent === d.task.answers.independent && a.dependent === d.task.answers.dependent;
+    return {ok, msg: ok ? d.task.success : d.task.retry};
+  },
+  yesNoExplain(d, a){
+    const hasReason = (a.reason || "").trim().length >= 8;
+    const ok = a.choice === d.task.answer && hasReason;
+    let msg = d.task.retry;
+    if(a.choice === d.task.answer && !hasReason){
+      msg = "Your yes/no choice is good. Add a short reason to explain why the relationship is proportional.";
+      return {ok:false, msg};
+    }
+    if(ok) msg = d.task.success;
+    return {ok, msg};
+  }
+};
+
+function create(tag, cls=""){
+  const node = document.createElement(tag);
+  if(cls) node.className = cls;
+  return node;
+}
+function getAnswerState(id){
+  return state.answers[id] || {};
+}
+function updateAnswer(id, patch){
+  state.answers[id] = Object.assign({}, getAnswerState(id), patch);
+  save();
+}
+function save(){ Storage.save(state); }
+
+function sliderBlock(d){
+  const block = create("div","control");
+  block.innerHTML = `
+    <label>${capitalize(d.inputName)} <small>Move the slider to test the pattern</small></label>
+    <input id="sceneRange" type="range" min="1" max="${d.xMax}" value="${state.sceneInput}">
+    <div style="display:flex;justify-content:space-between;margin-top:8px;color:var(--soft)">
+      <span>1</span><strong id="rangeValue">${state.sceneInput}</strong><span>${d.xMax}</span>
+    </div>`;
+  return block;
+}
+
+function renderDistrictList(){
+  el.districtList.innerHTML = "";
+  DISTRICTS.forEach((d, i) => {
+    const btn = create("button","district-btn" + (i===state.districtIndex ? " active" : ""));
+    btn.innerHTML = `
+      <div class="district-badge">${d.icon}</div>
+      <div class="district-text"><strong>${d.name}</strong><span>${d.subtitle}</span></div>
+      ${state.completed[d.id] ? '<div class="lock">✓</div>' : ''}`;
+    btn.addEventListener("click", ()=>{
+      state.districtIndex = i;
+      state.sceneInput = 3;
+      render();
+    });
+    el.districtList.appendChild(btn);
+  });
+}
+
+function renderCity(){
+  const allDone = DISTRICTS.every(d => state.completed[d.id]);
+  el.cityGrid.innerHTML = "";
+  DISTRICTS.forEach(d => {
+    const node = create("div","city-block" + (state.completed[d.id] ? " restored" : ""));
+    node.innerHTML = `<div class="city-icon">${d.icon}</div><h4>${d.name}</h4><p>${d.subtitle}</p><div class="glow"></div>`;
+    el.cityGrid.appendChild(node);
+  });
+  const finalNode = create("div","city-block finale" + (allDone ? " restored" : ""));
+  finalNode.innerHTML = `<div class="city-icon">🌆</div><h4>Skyline Finale</h4><p>${allDone ? 'The city is fully restored.' : 'Unlock when all districts glow.'}</p><div class="glow"></div>`;
+  el.cityGrid.appendChild(finalNode);
+  el.finaleCard.classList.toggle("hidden", !allDone);
+  if(allDone){
+    el.finaleGrid.innerHTML = DISTRICTS.map(d => `
+      <div class="finale-card">
+        <strong>${d.icon} ${d.name}</strong>
+        <p style="color:var(--muted);line-height:1.5">${capitalize(d.outputName)} = ${d.rate} × ${d.inputName}</p>
+        <p style="color:var(--soft);font-size:13px;line-height:1.5">Compare how the same structure looked different in each district.</p>
+      </div>`).join("");
+  }
+}
+
+function renderScene(){
+  el.sceneArea.querySelectorAll(".object").forEach(n => n.remove());
+  SceneRenderers[currentDistrict().sceneType](currentDistrict());
+}
+
+function renderTable(){
+  const d = currentDistrict();
+  const rows = ENGINE.getTableRows(d).map(r => `<tr><td>${r.x}</td><td>${r.y}</td></tr>`).join("");
+  el.tableWrap.innerHTML = `
+    <table>
+      <thead><tr><th>${capitalize(d.inputName)}</th><th>${capitalize(d.outputName)}</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+function renderEquation(){
+  const d = currentDistrict();
+  el.equationText.textContent = ENGINE.equation(d);
+  el.equationSub.innerHTML = `${capitalize(d.outputName)} = ${d.rate} × ${d.inputName}`;
+}
+
+function drawGraph(points, opts){
+  const canvas = el.graphCanvas;
+  const ctx = canvas.getContext("2d");
+  const w = canvas.width, h = canvas.height;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle = "#0a1325";
+  ctx.fillRect(0,0,w,h);
+
+  const margin = 40;
+  const xMax = opts.xMax;
+  const yMax = opts.yMax;
+
+  ctx.strokeStyle = "rgba(255,255,255,.08)";
+  ctx.lineWidth = 1;
+  for(let i=0;i<=6;i++){
+    const x = margin + (w - margin*2) * i/6;
+    ctx.beginPath(); ctx.moveTo(x, margin); ctx.lineTo(x, h-margin); ctx.stroke();
+  }
+  for(let i=0;i<=6;i++){
+    const y = h - margin - (h - margin*2) * i/6;
+    ctx.beginPath(); ctx.moveTo(margin, y); ctx.lineTo(w-margin, y); ctx.stroke();
+  }
+
+  ctx.strokeStyle = "#9ddfff";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(margin, h-margin); ctx.lineTo(margin, margin);
+  ctx.moveTo(margin, h-margin); ctx.lineTo(w-margin, h-margin);
+  ctx.stroke();
+
+  ctx.fillStyle = "#dbe9ff";
+  ctx.font = "13px Inter, Arial";
+  for(let i=0;i<=6;i++){
+    const x = margin + (w - margin*2) * i/6;
+    const value = Math.round(xMax * i/6);
+    ctx.fillText(value, x-5, h-margin+20);
+  }
+  for(let i=0;i<=6;i++){
+    const value = Math.round(yMax * i/6);
+    const y = h - margin - (h - margin*2) * i/6;
+    ctx.fillText(value, 8, y+4);
+  }
+  ctx.fillText(capitalize(currentDistrict().inputName), w/2-20, h-8);
+  ctx.save();
+  ctx.translate(15, h/2+12);
+  ctx.rotate(-Math.PI/2);
+  ctx.fillText(capitalize(currentDistrict().outputName), 0, 0);
+  ctx.restore();
+
+  ctx.strokeStyle = "#77f0c8";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  points.forEach((pt, i) => {
+    const px = margin + (w - margin*2) * pt.x/xMax;
+    const py = h - margin - (h - margin*2) * pt.y/yMax;
+    if(i===0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+  });
+  ctx.stroke();
+
+  points.slice(1).forEach(pt => {
+    const px = margin + (w - margin*2) * pt.x/xMax;
+    const py = h - margin - (h - margin*2) * pt.y/yMax;
+    const isCurrent = pt.x === state.sceneInput;
+    ctx.beginPath();
+    ctx.fillStyle = isCurrent ? "#ffd36a" : "#7de4f2";
+    ctx.arc(px, py, isCurrent ? 7 : 5, 0, Math.PI*2);
+    ctx.fill();
+    if(isCurrent){
+      ctx.fillStyle = "#fff5d8";
+      ctx.font = "bold 14px Inter, Arial";
+      ctx.fillText(`(${pt.x}, ${pt.y})`, px+10, py-10);
+    }
+  });
+}
+
+function renderSupports(){
+  const d = currentDistrict();
+  el.hintPanel.textContent = TEXT.hints[d.id];
+  el.languagePanel.textContent = TEXT.language[d.id];
+  el.vocabPanel.textContent = TEXT.vocab[d.id];
+
+  ["hint","language","vocab"].forEach(key => {
+    document.querySelector(`[data-toggle="${key}"]`).classList.toggle("active", state.supportOpen[key]);
+  });
+
+  el.hintPanel.classList.toggle("hidden", !state.supportOpen.hint);
+  el.languagePanel.classList.toggle("hidden", !state.supportOpen.language);
+  el.vocabPanel.classList.toggle("hidden", !state.supportOpen.vocab);
+  const any = Object.values(state.supportOpen).some(Boolean);
+  el.defaultSupport.classList.toggle("hidden", any);
+}
+
+function renderHeader(){
+  const d = currentDistrict();
+  el.heroTitle.textContent = d.name;
+  el.heroDesc.textContent = d.hero;
+  el.sceneTitle.textContent = d.sceneTitle;
+  el.sceneBlurb.textContent = d.sceneBlurb;
+  el.taskTitle.textContent = "District Task";
+  el.taskPrompt.textContent = d.prompt;
+  el.taskTag1.textContent = d.tags[0];
+  el.taskTag2.textContent = d.tags[1];
+  el.taskTag3.textContent = d.tags[2];
+}
+
+function renderTaskOnly(){
+  const d = currentDistrict();
+  const answerState = getAnswerState(d.id);
+  el.controlsArea.innerHTML = "";
+  el.controlsArea.appendChild(TaskRenderers[d.task.type](d, answerState));
+  const range = document.getElementById("sceneRange");
+  if(range){
+    range.addEventListener("input", e => {
+      state.sceneInput = Number(e.target.value);
+      document.getElementById("rangeValue").textContent = state.sceneInput;
+      renderScene();
+      renderRepresentations();
+      save();
+    });
+  }
+}
+
+function renderRepresentations(){
+  const d = currentDistrict();
+  renderTable();
+  renderEquation();
+  drawGraph(ENGINE.getPoints(d), {xMax:d.xMax, yMax:d.yMax});
+}
+
+function renderProgress(){
+  const done = DISTRICTS.filter(d => state.completed[d.id]).length;
+  const percent = Math.round(done / DISTRICTS.length * 100);
+  el.progressText.textContent = `${percent}%`;
+  el.progressFill.style.width = `${percent}%`;
+  el.completedCount.textContent = `${done}/${DISTRICTS.length}`;
+  el.scoreCount.textContent = state.score;
+}
+
+function showToast(msg){
+  el.toast.textContent = msg;
+  el.toast.classList.add("show");
+  clearTimeout(showToast.t);
+  showToast.t = setTimeout(()=> el.toast.classList.remove("show"), 2600);
+}
+
+function celebrate(){
+  for(let i=0;i<18;i++){
+    const s = create("div","spark");
+    s.style.left = (15 + Math.random()*70) + "%";
+    s.style.bottom = (20 + Math.random()*20) + "%";
+    s.style.background = ["#ffd36a","#78f0c4","#ff8fb1","#b198ff"][Math.floor(Math.random()*4)];
+    s.style.animationDelay = (Math.random()*0.25) + "s";
+    el.celebration.appendChild(s);
+    setTimeout(()=> s.remove(), 1600);
+  }
+}
+
+function evaluateCurrentTask(){
+  const d = currentDistrict();
+  const result = Evaluators[d.task.type](d, getAnswerState(d.id));
+  el.feedbackBox.className = "feedback " + (result.ok ? "good" : "bad");
+  el.feedbackBox.textContent = result.msg;
+  if(result.ok && !state.completed[d.id]){
+    state.completed[d.id] = true;
+    state.score += 12;
+    celebrate();
+    showToast(`${d.name} restored!`);
+  } else if(result.ok){
+    showToast(`Nice work. ${d.name} is already restored.`);
+  }
+  renderProgress();
+  renderDistrictList();
+  renderCity();
+  save();
+}
+
+function nextDistrict(){
+  state.districtIndex = (state.districtIndex + 1) % DISTRICTS.length;
+  state.sceneInput = 3;
+  el.feedbackBox.className = "feedback";
+  el.feedbackBox.textContent = "";
+  render();
+}
+
+function previewPattern(){
+  let current = 1;
+  state.sceneInput = current;
+  renderScene(); renderRepresentations();
+  clearInterval(previewPattern.timer);
+  previewPattern.timer = setInterval(() => {
+    current++;
+    if(current > currentDistrict().xMax){ clearInterval(previewPattern.timer); return; }
+    state.sceneInput = current;
+    const range = document.getElementById("sceneRange");
+    if(range){
+      range.value = current;
+      const rv = document.getElementById("rangeValue");
+      if(rv) rv.textContent = current;
+    }
+    renderScene(); renderRepresentations();
+  }, 420);
+}
+
+function renderStudio(){
+  const d = currentDistrict();
+  el.studioArea.innerHTML = "";
+  const wrap = create("div","controls");
+
+  const rateControl = create("div","control");
+  rateControl.innerHTML = `
+    <label>Choose a constant rate <small>How many ${d.outputName} per ${d.inputName.slice(0,-1) || d.inputName}?</small></label>
+    <select id="studioRate" class="select">
+      ${[2,3,4,5,6].map(n => `<option value="${n}" ${Number(state.studio.rate)===n ? "selected":""}>${d.vars[1]} = ${n}${d.vars[0]}</option>`).join("")}
+    </select>`;
+  wrap.appendChild(rateControl);
+
+  const inputControl = create("div","control");
+  inputControl.innerHTML = `
+    <label>Choose an input <small>Test your design with a number of ${d.inputName}</small></label>
+    <input id="studioInput" type="range" min="1" max="${d.xMax}" value="${state.studio.input}">
+    <div style="display:flex;justify-content:space-between;margin-top:8px;color:var(--soft)">
+      <span>1</span><strong id="studioInputValue">${state.studio.input}</strong><span>${d.xMax}</span>
+    </div>`;
+  wrap.appendChild(inputControl);
+
+  const sentence = create("div","control");
+  sentence.innerHTML = `<label>Explain your design <small>Use your own words</small></label>`;
+  const ta = create("textarea","textarea");
+  ta.id = "studioSentence";
+  ta.placeholder = `Example: I made ${d.vars[1]} = 4${d.vars[0]} because each ${d.inputName.slice(0,-1) || d.inputName} has 4 ${d.outputName}.`;
+  ta.value = state.studio.sentence || "";
+  sentence.appendChild(ta);
+
+  const preview = create("div","control");
+  preview.innerHTML = `<label>Design preview <small>See the relationship in 3 forms</small></label>
+    <div class="eq-card" style="font-size:22px" id="studioEquationPreview">${d.vars[1]} = ${state.studio.rate}${d.vars[0]}</div>
+    <div class="frame" style="margin-top:10px" id="studioSentencePreview">${state.studio.input} ${d.inputName} → ${state.studio.input * state.studio.rate} ${d.outputName}</div>`;
+  wrap.appendChild(sentence);
+  wrap.appendChild(preview);
+
+  el.studioArea.appendChild(wrap);
+
+  document.getElementById("studioRate").addEventListener("change", e => {
+    state.studio.rate = Number(e.target.value); renderStudio(); save();
+  });
+  document.getElementById("studioInput").addEventListener("input", e => {
+    state.studio.input = Number(e.target.value);
+    renderStudio(); save();
+  });
+  ta.addEventListener("input", e => {
+    state.studio.sentence = e.target.value; save();
+  });
+}
+
+function checkStudio(){
+  const d = currentDistrict();
+  const sentence = (state.studio.sentence || "").trim();
+  const enough = sentence.length >= 12;
+  const feedback = enough
+    ? `Saved. Your design shows ${d.vars[1]} = ${state.studio.rate}${d.vars[0]}. When ${d.vars[0]} = ${state.studio.input}, ${d.vars[1]} = ${state.studio.input * state.studio.rate}.`
+    : "Add a short explanation in your own words before saving the studio design.";
+  const ok = enough;
+  el.studioFeedback.className = "feedback " + (ok ? "good" : "bad");
+  el.studioFeedback.textContent = feedback;
+  if(ok){
+    state.score += 5;
+    renderProgress();
+    save();
+  }
+}
+
+function newStudioPrompt(){
+  state.studio.rate = [2,3,4,5,6][Math.floor(Math.random()*5)];
+  state.studio.input = 1 + Math.floor(Math.random()*currentDistrict().xMax);
+  state.studio.sentence = "";
+  renderStudio();
+  save();
+}
+
+function render(){
+  renderHeader();
+  renderDistrictList();
+  renderCity();
+  renderScene();
+  renderRepresentations();
+  renderSupports();
+  renderTaskOnly();
+  renderStudio();
+  renderProgress();
+}
+
+document.querySelectorAll("[data-toggle]").forEach(btn => {
+  btn.addEventListener("click", ()=> {
+    const key = btn.dataset.toggle;
+    state.supportOpen[key] = !state.supportOpen[key];
+    renderSupports();
+    save();
+  });
+});
+
+el.checkBtn.addEventListener("click", evaluateCurrentTask);
+el.nextBtn.addEventListener("click", nextDistrict);
+el.animateBtn.addEventListener("click", previewPattern);
+el.openHelpBtn.addEventListener("click", ()=> el.helpModal.classList.add("show"));
+el.closeHelpBtn.addEventListener("click", ()=> el.helpModal.classList.remove("show"));
+el.helpModal.addEventListener("click", e => { if(e.target === el.helpModal) el.helpModal.classList.remove("show"); });
+el.resetBtn.addEventListener("click", ()=> {
+  Storage.clear();
+  state.districtIndex = 0;
+  state.sceneInput = 3;
+  state.score = 0;
+  state.completed = {};
+  state.answers = {};
+  state.supportOpen = {hint:false, language:false, vocab:false};
+  state.studio = {rate:4, input:3, sentence:""};
+  render();
+  showToast("Progress reset.");
+});
+el.studioBtn.addEventListener("click", checkStudio);
+el.newStudioBtn.addEventListener("click", newStudioPrompt);
+
+render();
+</script>
 </body>
 </html>
-"""
-
-path = Path("/mnt/data/equation_gallery_6EEC9.html")
-path.write_text(html, encoding="utf-8")
-print(f"Saved to {path}")
+'''
+path = Path('/mnt/data/equation_gallery_6EEC9_v2.html')
+path.write_text(html, encoding='utf-8')
+print(path, path.stat().st_size)
